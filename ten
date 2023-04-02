@@ -1,0 +1,18 @@
+node{
+    stage('continues download'){
+        git 'https://github.com/nagsaaketh/dev.git'
+    }
+    stage('continues build'){
+        sh 'mvn package'            
+    }
+    stage('continues deployment'){
+        deploy adapters: [tomcat9(credentialsId: 'af874619-54b0-4555-bfd0-c319eba9433a', path: '', url: 'http://172.31.45.178:8080')], contextPath: 'sudoapp', war: '**/*.war'
+    }
+    stage('continues testing'){
+        git 'https://github.com/nagsaaketh/teste.git'
+        sh 'java -jar /var/lib/jenkins/workspace/scripttest/testing.jar'
+    }
+    stage('continues delivery'){
+        deploy adapters: [tomcat9(credentialsId: 'bb85478e-b38d-4b3d-aa0e-cc2301871ad6', path: '', url: 'http://172.31.47.4:8080')], contextPath: 'sdapp', war: '**/*.war'
+    }
+}
